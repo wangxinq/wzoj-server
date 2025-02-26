@@ -1,0 +1,54 @@
+version: '3'
+services:
+  wzoj-server-gateway:
+    container_name: wzoj-server-gateway
+    build:
+      context: ./wzoj-server-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8101:8101"
+    networks:
+      - mynetwork
+
+  wzoj-server-user-service:
+    container_name: wzoj-server-user-service
+    build:
+      context: ./wzoj-server-user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8102:8102"
+    networks:
+      - mynetwork
+    depends_on:
+      - wzoj-server-gateway
+
+  wzoj-server-question-service:
+    container_name: wzoj-server-question-service
+    build:
+      context: ./wzoj-server-question-service
+      dockerfile: Dockerfile
+    ports:
+      - "8103:8103"
+    networks:
+      - mynetwork
+    depends_on:
+      - wzoj-server-user-service
+      - wzoj-server-gateway
+
+  wzoj-server-judge-service:
+    container_name: wzoj-server-judge-service
+    build:
+      context: ./wzoj-server-judge-service
+      dockerfile: Dockerfile
+    ports:
+      - "8104:8104"
+    networks:
+      - mynetwork
+    depends_on:
+      - wzoj-server-user-service
+      - wzoj-server-question-service
+      - wzoj-server-gateway
+
+# 网络，不定义的话就是默认网络
+networks:
+  mynetwork:
